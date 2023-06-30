@@ -1,5 +1,181 @@
-template-repository (1.0-1) unstable; urgency=medium
+apt-rdepends (1.3.0-10) unstable; urgency=medium
 
-  * Initial release
+  * QA upload.
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+  [ Debian Janitor ]
+  * Use secure URI in Homepage field.
+  * Set upstream metadata fields: Repository-Browse.
+  * Update standards version to 4.6.1, no changes needed.
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Sun, 27 Nov 2022 04:41:38 +0000
+
+apt-rdepends (1.3.0-9) unstable; urgency=medium
+
+  * QA upload.
+  * Source-only upload to allow testing migration.
+  * Bump Standards-Version to 4.6.0.
+  * Bump debhelper compat level to v13.
+  * debian/rules: Use dh13 syntax.
+
+ -- Boyuan Yang <byang@debian.org>  Fri, 17 Sep 2021 23:10:19 -0400
+
+apt-rdepends (1.3.0-8) unstable; urgency=medium
+
+  * QA upload.
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since stretch:
+    + apt-rdepends: Drop versioned constraint on libapt-pkg-perl in Depends.
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Fri, 20 Aug 2021 12:32:08 +0100
+
+apt-rdepends (1.3.0-7) unstable; urgency=medium
+
+  * QA upload.
+  * Using new DH level format. Consequently:
+      - debian/compat: removed.
+      - debian/control: changed from 'debhelper >= 10' to
+        'debhelper-compat = 12' in Build-Depends field.
+  * debian/control:
+      - Fixed the Homepage field.
+      - Added 'Rules-Requires-Root: no' in source stanza.
+      - Added VCS fields.
+      - Bumped Standards-Version to 4.4.1.
+  * debian/copyright:
+      - Updated packaging copyright years.
+      - Using a secure copyright format in URI.
+      - Fixed the Source field.
+  * debian/patches/20_Makefile.patch: added the option --date in command
+    pod2man to make the package reproducible and updated header.
+  * debian/salsa-ci.yml: added to provide CI tests for Salsa.
+  * debian/source/lintian-overrides: added to override a false positive.
+  * debian/tests/control: created to provide two trivial tests.
+  * debian/rules: added override_dh_auto_clean to delete a file created
+    in upstream folder during building.
+  * debian/watch: updated with new variables.
+
+ -- Thiago Andrade Marques <thmarques@gmail.com>  Sun, 22 Dec 2019 15:15:07 -0300
+
+apt-rdepends (1.3.0-6) unstable; urgency=medium
+
+  * QA upload.
+  * Bumped DH level to 10.
+  * Run wrap-and-sort.
+  * debian/control: bumped Standards-Version to 3.9.8.
+  * debian/copyright: updated the packaging copyright years.
+  * debian/patches/:
+      - apt-rdepends: renamed to 10_apt-rdepends.patch.
+      - Makefile: renamed to 20_Makefile.patch.
+      - 30_fix-multiple-versions.patch: added to fix the use of the oldest
+        package when multiple packages exist. Thanks to Michael Bonhomme
+        <spike.sp@free.fr>. (Closes: #841207)
+  * debian/watch: bumped to version 4.
+
+ -- Joao Eriberto Mota Filho <eriberto@debian.org>  Mon, 26 Dec 2016 00:23:44 -0200
+
+apt-rdepends (1.3.0-5) unstable; urgency=medium
+
+  * QA upload.
+  * Upload to unstable.
+  * debian/copyright: dropping dot-zero from GPL license short name.
+
+ -- Joao Eriberto Mota Filho <eriberto@debian.org>  Tue, 05 May 2015 16:54:42 -0300
+
+apt-rdepends (1.3.0-4) experimental; urgency=medium
+
+  * QA upload.
+  * Added the apt-rdepends and Makefile patches to finish the
+      direct changes in upstream source code.
+  * New upstream homepage.
+  * Migrations:
+      - debian/copyright to 1.0 format.
+      - debian/rules to reduced format.
+      - DebSrc to 3.0.
+      - DH level to 9.
+  * debian/control:
+      - Added the Homepage field.
+      - Bumped Standards-Version to 3.9.6.
+      - Removed vcg from Suggests field. This package no longer
+          exist in Debian.
+  * debian/manpages: added to install the upstream manpage.
+  * debian/watch: created.
+
+ -- Joao Eriberto Mota Filho <eriberto@debian.org>  Wed, 28 Jan 2015 23:27:29 -0200
+
+apt-rdepends (1.3.0-3) unstable; urgency=low
+
+  [ Roman Naumann ]
+  * QA upload.
+  * Add parsing for the -f/--follow option. (Closes: #332311),
+    thanks to kuroi for the help.
+
+ -- Holger Levsen <holger@debian.org>  Sun, 16 Sep 2012 09:30:08 +0000
+
+apt-rdepends (1.3.0-2) unstable; urgency=low
+
+  * QA upload.
+  * Force apt-rdepends to only run in LC_ALL=C (Closes: #332308)
+  * Include non-maintainer upload by Lucas Nussbaum <lucas@lucas-
+    nussbaum.net>
+  * Move man page to section 1 (Closes: #556127)
+  * Tweak POD content to improve manual page (Closes: #349473)
+
+ -- Neil Williams <codehelp@debian.org>  Tue, 15 Feb 2011 22:05:42 +0000
+
+apt-rdepends (1.3.0-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Add support for passing APT configuration on the command line with -o,
+    like apt-get and apt-cache do. Closes: #346140.
+
+ -- Lucas Nussbaum <lucas@lucas-nussbaum.net>  Tue, 21 Aug 2007 10:12:54 +0200
+
+apt-rdepends (1.3.0-1) unstable; urgency=low
+
+  * New upstream release
+    - Fix typo in documentation.  (Closes: Bug#307024)
+    - Now outputs graphs in VCG format.  (Closes: Bug#311068)
+    - Pre-Depends are now shown and followed by default.  (Closes: Bug#327069)
+  * Respects Policy 3.6.2.
+  * Added watch file.
+
+ -- Simon Law <sfllaw@debian.org>  Wed, 21 Sep 2005 16:18:00 -0400
+
+apt-rdepends (1.2.0-2) unstable; urgency=medium
+
+  * Tighter dependency on libapt-pkg-perl (Closes: Bug#230784)
+
+ -- Simon Law <sfllaw@debian.org>  Sun, 16 May 2004 16:30:06 -0400
+
+apt-rdepends (1.2.0-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Resolves dependencies in any locale.  (Closes: Bug#192888)
+    - --dotty mode respects --state-show=STATES.  (Closes: Bug#225417)
+    - Now does recursive Build-Depends.  (Closes: Bug#156599)
+  * New maintainer e-mail.
+  * Respects Policy 3.6.1.
+  * Uses Debhelper 4.
+  * Suggests springgraph.
+
+ -- Simon Law <sfllaw@debian.org>  Fri, 23 Jan 2004 03:54:46 -0500
+
+apt-rdepends (1.1.0-1) unstable; urgency=low
+
+  * New upstream release
+    - You can now display packages by current state (Closes: Bug#156793)
+
+ -- Simon Law <sfllaw@engmail.uwaterloo.ca>  Sun, 18 Aug 2002 10:16:59 -0400
+
+apt-rdepends (1.0.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Adds upstream changelog.
+
+ -- Simon Law <sfllaw@engmail.uwaterloo.ca>  Sat, 27 Jul 2002 16:35:55 -0400
+
+apt-rdepends (1.0.0-1) unstable; urgency=low
+
+  * Initial Release.  (Closes: Bug#153116)
+
+ -- Simon Law <sfllaw@engmail.uwaterloo.ca>  Sun, 14 Jul 2002 01:02:47 -0400
