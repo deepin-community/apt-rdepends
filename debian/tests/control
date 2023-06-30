@@ -1,0 +1,5 @@
+Test-Command: apt-rdepends -r nftables
+Restrictions: allow-stderr
+
+Test-Command: apt-rdepends -b rdate
+Restrictions: allow-stderr

@@ -1,4 +1,11 @@
 #!/usr/bin/make -f
+#export DH_VERBOSE=1
 
 %:
 	dh $@
+
+override_dh_auto_install:
+	dh_auto_install -- prefix=debian/apt-rdepends/usr
+
+execute_after_dh_auto_clean:
+	rm -f apt-rdepends.1

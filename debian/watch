@@ -1,0 +1,3 @@
+version=4
+http://www.sfllaw.ca/programs/apt-rdepends-@ANY_VERSION@@ARCHIVE_EXT@
+https://github.com/sfllaw/sfllaw.ca/tree/master/static/programs .*/blob/master/static/programs/apt-rdepends-@ANY_VERSION@@ARCHIVE_EXT@

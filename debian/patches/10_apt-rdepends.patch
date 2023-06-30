@@ -1,0 +1,137 @@
+Description: add support for passing APT configuration on the command line
+             with -o like apt-get and apt-cache do. (Closes: #346140)
+Author: Lucas Nussbaum <lucas@lucas-nussbaum.net>
+Last-Update: 2007-08-21
+
+Description: Force apt-rdepends to only run in LC_ALL=C. (Closes: #332308)
+Author: Neil Williams <codehelp@debian.org>
+Last-Update: 2011-02-15
+
+Description: Add parsing for the -f/--follow option. (Closes: #332311)
+Author: Holger Levsen <holger@debian.org>
+Last-Update: 2012-09-16
+Index: apt-rdepends-1.3.0/apt-rdepends
+===================================================================
+--- apt-rdepends-1.3.0.orig/apt-rdepends
++++ apt-rdepends-1.3.0/apt-rdepends
+@@ -42,6 +42,10 @@ my $output = "console";
+ my @follow = ();
+ # Which types of dependencies do we show?
+ my @show = ();
++# Which configuration options do we want to pass to libapt-pkg.
++# The syntax is -o Foo::Bar=bar
++my @configoptions = ();
++
+ 
+ # We don't print package states by default.
+ my $printstate = 0;
+@@ -53,6 +57,11 @@ my @stateshow = ();
+ # The object that knows how to display $output
+ my $Print;
+ 
++# This script depends highly on no function returning localized data.
++require 5.004;
++use POSIX qw(locale_h);
++setlocale(LC_ALL, "C");
++
+ GetOptions ('reverse|r'        => \$reverse,
+ 	    'build-depends|b'  => \$builddep,
+ 	    'dotty|d'	       => sub { $output = "dotty" },
+@@ -62,6 +71,7 @@ GetOptions ('reverse|r'        => \$reve
+ 	    'print-state|p'    => \$printstate,
+ 	    'state-follow=s'   => \@statefollow,
+ 	    'state-show=s'     => \@stateshow,
++	    'option|o=s'       => \@configoptions,
+ 	    'help|h|?'         => \$help,
+ 	    'version'          => \$ver,
+ 	    'man'              => \$man) or pod2usage(verbose => 0);
+@@ -103,6 +113,12 @@ use AptPkg::Source;
+ $_config->init();
+ $_system = $_config->system();
+ 
++# override config if asked to
++for my $opt (@configoptions) {
++  my ($o, $v) = split(/\=/, $opt, 2);
++  $_config->set($o, $v);
++}
++
+ # Choose whether we're searching Depends or Build-Depends.
+ my $cache = AptPkg::Cache->new();
+ my $source;
+@@ -116,13 +132,47 @@ open(STDOUT, ">&OLDOUT");
+ close(OLDOUT);
+ select(STDOUT); $| = 0;
+ 
++# Converts a string like "Depends" to the corresponding AptPkg::Dep::* enum.
++sub depstr_to_enum {
++  my $depstr = shift(@_);
++  if ($depstr eq "Depends") {
++    return AptPkg::Dep::Depends;
++  }
++  if ($depstr eq "PreDepends") {
++    return AptPkg::Dep::PreDepends;
++  }
++  if ($depstr eq "Suggests") {
++    return AptPkg::Dep::Suggests;
++  }
++  if ($depstr eq "Recommends") {
++    return AptPkg::Dep::Recommends;
++  }
++  if ($depstr eq "Conflicts") {
++    return AptPkg::Dep::Conflicts;
++  }
++  if ($depstr eq "Replaces") {
++    return AptPkg::Dep::Replaces;
++  }
++  if ($depstr eq "Obsoletes") {
++    return AptPkg::Dep::Obsoletes;
++  }
++  print(STDERR "invalid argument given to -f (--follow): ${depstr}\n");
++  exit 101;
++}
++
+ # Set defaults if they weren't defined on the command line.
+ if ($builddep) {
+   @follow = ("Build-Depends", "Build-Depends-Indep") unless (@follow);
+   @show = ("Build-Depends", "Build-Depends-Indep") unless (@show);
+ }
+ else {
+-  @follow = (AptPkg::Dep::Depends, AptPkg::Dep::PreDepends) unless (@follow);
++  unless(@follow) {
++    @follow = (AptPkg::Dep::Depends, AptPkg::Dep::PreDepends);
++  }
++  else {
++    @follow = map{depstr_to_enum($_)}(@follow);
++  }
++
+   @show = (AptPkg::Dep::Depends, AptPkg::Dep::PreDepends) unless (@show);
+ }
+ my %deptype_dict;
+@@ -576,7 +626,7 @@ Show build dependencies instead of norma
+ =item B<-d>, B<--dotty>
+ 
+ dotty takes a list of packages on the command line and generates
+-output suitable for use by springgraph.  The result will be a set of
++output suitable for use by springgraph (1). The result will be a set of
+ nodes and edges representing the relationships between the
+ packages. By default the given packages will trace out all dependent
+ packages which can produce a very large graph.
+@@ -658,11 +708,17 @@ Blue lines are pre-depends, green lines
+ are suggests, orange lines are recommends, red lines are replaces,
+ and black lines are depends.
+ 
++=item B<-o>, B<--option=>I<OPTION>
++
++Set an APT Configuration Option; This will set an arbitrary configuration
++option. The syntax is B<-o Foo::Bar=bar>.
++
+ =back
+ 
+ =head1 SEE ALSO
+ 
+-I<apt.conf>(5), I<sources.list>(5), B<apt-cache>(8), I<AptPkg>(3)
++I<apt.conf>(5), I<sources.list>(5), B<apt-cache>(8), I<AptPkg>(3),
++I<springgraph>(1)
+ 
+ =head1 BUGS
+ 
